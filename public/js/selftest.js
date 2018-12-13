@@ -17,7 +17,6 @@ function tryGet(url, timeout=0) {
             reject(e);
         }
         xhr.addEventListener("readystatechange", function processRequest(e) {
-            console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
             if (xhr.readyState == xhr.HEADERS_RECEIVED) {
                 console.log(xhr.getAllResponseHeaders());
             } else if (xhr.readyState == xhr.DONE) {
@@ -32,22 +31,14 @@ function getIPInfo() {
         tryGet("/status", timeout).then(function(xhr) {
             console.log(xhr);
 
-            // TODO: Check X-SSN-PROBLEM == BLOCKED || NOMEMBER
-
-            if (xhr.status == 204) {
+            if (xhr.status == 200 && xhr.getResponseHeader('content-type') == 'application/json') {
                 resolve("OK");
-            } else if (xhr.status == 302) {
-                // TODO: check redirect URL
-                resolve("Proxy Required");
-            } else if (xhr.status == 200) {
-                resolve("Intercepted");
             } else {
                 console.log(xhr.status);
-                console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                resolve("FAIL");
+                reject("FAIL");
             }
         }).catch(function(err) {
-            resolve(err);
+            reject(err);
         });
     });
 }
@@ -63,16 +54,17 @@ function checkStatus(url) {
                 resolve("OK");
             } else if (xhr.status == 302) {
                 // TODO: check redirect URL
+                console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
                 resolve("Proxy Required");
             } else if (xhr.status == 200) {
                 resolve("Intercepted");
             } else {
                 console.log(xhr.status);
                 console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                resolve("FAIL");
+                reject("FAIL");
             }
         }).catch(function(err) {
-            resolve(err);
+            reject(err);
         });
     });
 }
@@ -130,8 +122,82 @@ function ice() {
     });
 }
 
-getIPInfo().then(console.log);
-checkStatus(httpTestURL).then(console.log);
-checkStatus(httpsTestURL).then(console.log);
-ice().then(console.log, console.log);
-// if (candidate === null || (candidate.indexOf('141.84.69.') < 0 && candidate.indexOf('129.187.166.15') < 0)) {
+function sleep(ms) {
+    return new Promise(function(resolve) {
+        window.setTimeout(resolve, ms);
+    });
+}
+
+function runTest(index, testFunc) {
+    console.log("test", index, Date.now());
+    const status = getStatusColumn(index);
+    return new Promise(function(resolve, reject) {
+        markRunning(status);
+        sleep(500).then(function(res) {
+            testFunc().then(function(res) {
+                console.log(index, res);
+                markOK(status);
+                resolve(res);
+            }, function(err) {
+                console.log(index, "Failed:", err);
+                markFailed(status);
+                skipRemainingTests(index);
+                reject(err);
+            })
+        });
+
+    });
+}
+
+function markRunning(elem) {
+    elem.innerHTML = 'Running';
+    elem.className = 'running';
+}
+
+function markOK(elem) {
+    elem.innerHTML = 'OK';
+    elem.className = 'ok';
+}
+
+function markFailed(elem) {
+    elem.innerHTML = 'Fail';
+    elem.className = 'fail';
+}
+
+function markSkipped(elem) {
+    elem.innerHTML = 'Skipped';
+    elem.className = 'warn';
+}
+
+function getStatusColumn(index) {
+    return document.querySelector('#tests tr:nth-child('+(index+1)+') td:nth-child(3)');
+}
+
+function skipRemainingTests(index) {
+    let i = 0;
+    document.querySelectorAll('#tests td:nth-child(3)').forEach(function(elem) {
+        if (i > index) {
+            markSkipped(elem);
+        }
+        i++;
+    });
+}
+
+sleep(500).then(function(res) {
+    return runTest(0, function() {
+        return getIPInfo();
+    });
+}).then(function(res) {
+    return runTest(1, function() {
+        return checkStatus(httpTestURL);
+    });
+}).then(function(res) {
+    return runTest(2, function() {
+        return checkStatus(httpsTestURL);
+    });
+}).then(function(res) {
+    return runTest(3, function() {
+        // if (candidate === null || (candidate.indexOf('141.84.69.') < 0 && candidate.indexOf('129.187.166.15') < 0)) {
+        return ice();
+    });
+}).catch(console.log);
