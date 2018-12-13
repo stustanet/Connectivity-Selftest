@@ -77,7 +77,42 @@ nav .container {
 }
 
 #main {
-    margin-top: 72px;
+    margin-top: 64px;
+}
+
+div.info,
+div.warn,
+div.error {
+    position: relative;
+    padding: .5rem .8rem;
+    margin-bottom: .5rem;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    display: none;
+}
+
+div.warn {
+    color: #856404;
+    background: #fff3cd;
+    border-color: #ffeeba;
+}
+
+div.error {
+    color: #721c24;
+    background: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.show {
+    display: block;
+}
+
+span#ip {
+    font-weight: bold;
+}
+
+#status {
+    margin-top: 1.5rem;
 }
 
 #tests {
@@ -96,20 +131,20 @@ table {
     border: 1px solid #dee2e6;
 }
 
-.running {
+td.running {
     color: #36a8ff;
     font-style: italic;
 }
 
-.ok {
+td.ok {
     color: #1ea41f;
 }
 
-.warn {
+td.warn {
     color: #e4ad11;
 }
 
-.fail {
+td.fail {
     font-weight: bold;
     color: #c53631;;
 }

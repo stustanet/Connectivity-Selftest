@@ -17,9 +17,10 @@ function tryGet(url, timeout=0) {
             reject(e);
         }
         xhr.addEventListener("readystatechange", function processRequest(e) {
-            if (xhr.readyState == xhr.HEADERS_RECEIVED) {
-                console.log(xhr.getAllResponseHeaders());
-            } else if (xhr.readyState == xhr.DONE) {
+            // if (xhr.readyState == xhr.HEADERS_RECEIVED) {
+            //     console.log(xhr.getAllResponseHeaders());
+            // }
+            if (xhr.readyState == xhr.DONE) {
                 resolve(xhr);
             }
         }, false);
@@ -30,9 +31,16 @@ function getIPInfo() {
     return new Promise(function(resolve, reject) {
         tryGet("/status", timeout).then(function(xhr) {
             console.log(xhr);
-
             if (xhr.status == 200 && xhr.getResponseHeader('content-type') == 'application/json') {
-                resolve("OK");
+                let res = JSON.parse(xhr.response);
+                document.getElementById('ip').innerHTML = res.ip;
+                showBox('info-ip');
+                if (!res.ssn) {
+                    showBox('error-external');
+                    reject("EXTERNAL");
+                } else {
+                    resolve(res);
+                }
             } else {
                 console.log(xhr.status);
                 reject("FAIL");
@@ -55,13 +63,20 @@ function checkStatus(url) {
             } else if (xhr.status == 302) {
                 // TODO: check redirect URL
                 console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                resolve("Proxy Required");
+                showBox('error-proxy');
+                reject("NOPROXY");
             } else if (xhr.status == 200) {
                 resolve("Intercepted");
             } else {
                 console.log(xhr.status);
-                console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                reject("FAIL");
+                let problem = xhr.getResponseHeader('x-ssn-problem');
+                console.log("x-ssn-problem", problem);
+                if (problem == "BLOCKED") {
+                    showBox('error-blocked');
+                    reject("BLOCKED");
+                } else {
+                    reject("FAIL");
+                }
             }
         }).catch(function(err) {
             reject(err);
@@ -150,6 +165,10 @@ function runTest(index, testFunc) {
     });
 }
 
+function showBox(name) {
+    document.getElementById(name).classList.add('show');
+}
+
 function markRunning(elem) {
     elem.innerHTML = 'Running';
     elem.className = 'running';
@@ -185,6 +204,7 @@ function skipRemainingTests(index) {
 }
 
 sleep(500).then(function(res) {
+    document.getElementById('status').innerHTML = "Performing Tests ...";
     return runTest(0, function() {
         return getIPInfo();
     });
@@ -201,4 +221,9 @@ sleep(500).then(function(res) {
         // if (candidate === null || (candidate.indexOf('141.84.69.') < 0 && candidate.indexOf('129.187.166.15') < 0)) {
         return ice();
     });
-}).catch(console.log);
+}).then(function(res) {
+    document.getElementById('status').innerHTML = "Done!"
+}).catch(function(err) {
+    console.log(err);
+    document.getElementById('status').innerHTML = "Problems detected!"
+});
