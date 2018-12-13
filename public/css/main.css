@@ -85,12 +85,15 @@ nav .container {
     margin: 20px 0;
 }
 
-#tests td {
-    padding: 3px 0;
+table {
+    border-collapse: collapse;
 }
 
-th {
+#tests th,
+#tests td {
+    padding: .6rem;
     text-align: left;
+    border: 1px solid #dee2e6;
 }
 
 .ok {
