@@ -43,9 +43,11 @@ function getIPInfo() {
                 }
             } else {
                 console.log(xhr.status);
+                showBox('error-unknown');
                 reject("FAIL");
             }
         }).catch(function(err) {
+            showBox('error-unknown');
             reject(err);
         });
     });
@@ -66,7 +68,8 @@ function checkStatus(url) {
                 showBox('error-proxy');
                 reject("NOPROXY");
             } else if (xhr.status == 200) {
-                resolve("Intercepted");
+                showBox('error-unknown');
+                reject("INTERCEPTED"); // TODO
             } else {
                 console.log(xhr.status);
                 let problem = xhr.getResponseHeader('x-ssn-problem');
@@ -75,10 +78,12 @@ function checkStatus(url) {
                     showBox('error-blocked');
                     reject("BLOCKED");
                 } else {
+                    showBox('error-unknown');
                     reject("FAIL");
                 }
             }
         }).catch(function(err) {
+            showBox('error-unknown');
             reject(err);
         });
     });
@@ -155,7 +160,6 @@ function runTest(index, testFunc) {
                 markOK(status);
                 resolve(res);
             }, function(err) {
-                console.log(index, "Failed:", err);
                 markFailed(status);
                 skipRemainingTests(index);
                 reject(err);
