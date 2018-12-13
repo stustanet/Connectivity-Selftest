@@ -86,6 +86,7 @@ div.error {
     position: relative;
     padding: .5rem .8rem;
     margin-bottom: .5rem;
+    line-height: 1.4;
     border: 1px solid #dee2e6;
     border-radius: .25rem;
     display: none;
