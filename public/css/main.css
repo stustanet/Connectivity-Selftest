@@ -1,0 +1,107 @@
+
+html {
+    font-family: sans-serif;
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 400px;
+}
+
+body {
+    line-height: 1;
+    font-size: 100%;
+    vertical-align: baseline;
+    color: #4B4B4B;
+    display: flex;
+    flex-direction: column;
+}
+
+#top-bar {
+    background: #fff;
+    width: 100%;
+    height: 54px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 8px 0 rgba(0,0,0,0.12);
+    z-index: 1;
+}
+
+#top-bar div.logo {
+    display: inline-block;
+    flex: 1 1 0;
+    height: 30px;
+    padding: 12px 0;
+}
+
+#top-bar .logo a {
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    max-width: 180px;
+    background-image: url(../img/logo.png);
+    background-size: contain;
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+#top-bar h1 {
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: inline;
+    font-size: 1.4em;
+}
+
+article > *,
+.container {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px;
+    max-width: 600px;
+}
+
+nav .container {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+#main {
+    margin-top: 72px;
+}
+
+#tests {
+    width: 100%;
+    margin: 20px 0;
+}
+
+#tests td {
+    padding: 3px 0;
+}
+
+th {
+    text-align: left;
+}
+
+.ok {
+    color: #1ea41f;
+}
+
+.warn {
+    color: #e4ad11;
+}
+
+.fail {
+    font-weight: bold;
+    color: #c53631;;
+}
