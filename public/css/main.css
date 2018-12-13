@@ -103,7 +103,7 @@ div.error {
     border-color: #f5c6cb;
 }
 
-.show {
+div.show {
     display: block;
 }
 
