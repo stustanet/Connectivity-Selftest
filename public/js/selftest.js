@@ -3,7 +3,7 @@
 
 const httpTestURL = "http://connectivity.jsweb.eu/generate_204";
 const httpsTestURL = "https://connectivity.js-web.eu/generate_204";
-const iceServer = "stun:stun.stunprotocol.org";
+const iceServer = "stun:stun.l.google.com:19302"; //"stun:stun.stunprotocol.org";
 
 const timeout = 5000; // 5s
 
@@ -73,7 +73,7 @@ function ice() {
     return new Promise(function(resolve, reject) {
         const config = {
             iceServers: [{
-                urls: iceServer
+                urls: 'stun:stun.stunprotocol.org'
             }],
             iceTransportPolicy: "all",
             iceCandidatePoolSize: 0
@@ -94,6 +94,7 @@ function ice() {
                     'port': parseInt(fields[5]),
                     'type': fields[7]
                 };
+                console.log(candidate);
                 if (best === null || best.priority >= candidate.priority) {
                     best = candidate;
                 }
