@@ -73,7 +73,7 @@ function ice() {
     return new Promise(function(resolve, reject) {
         const config = {
             iceServers: [{
-                urls: 'stun:stun.stunprotocol.org'
+                urls: iceServer,
             }],
             iceTransportPolicy: "all",
             iceCandidatePoolSize: 0
