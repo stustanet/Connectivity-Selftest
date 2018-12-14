@@ -115,7 +115,7 @@ div.error {
 }
 
 div.show {
-    display: block;
+    display: block !important;
 }
 
 span#ip {
@@ -158,4 +158,33 @@ td.warn {
 td.fail {
     font-weight: bold;
     color: #c53631;;
+}
+
+#log-container {
+    padding: .4rem .6rem;
+    line-height: 1.2;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    display: none;
+}
+
+#log-container h2 {
+    margin: 0.2rem 0 0;
+    font-size: 1.2em;
+}
+
+#log-container p {
+    margin: 0.5rem 0;
+}
+
+#log {
+    resize: none;
+    width: 100%;
+    min-height: 100px;
+    height: auto;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
 }

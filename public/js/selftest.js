@@ -5,7 +5,7 @@ const httpTestURL = "http://connectivity.jsweb.eu/generate_204";
 const httpsTestURL = "https://connectivity.js-web.eu/generate_204";
 const iceServer = "stun:stun.l.google.com:19302"; //"stun:stun.stunprotocol.org";
 
-const timeout = 5000; // 5s
+const timeout = 10000; // 10s
 
 let noMember = false;
 
@@ -28,11 +28,14 @@ function tryGet(url, timeout=0) {
 
 function getIPInfo() {
     return new Promise(function(resolve, reject) {
+        log("Getting IP Info ...");
         tryGet("/status", timeout).then(function(xhr) {
             console.log(xhr);
             if (xhr.status == 200 && xhr.getResponseHeader('content-type') == 'application/json') {
                 let res = JSON.parse(xhr.response);
                 document.getElementById('ip').innerHTML = res.ip;
+                log("IP: "+res.ip);
+                log("Is SSN IP: "+res.ssn);
                 showBox('info-ip');
                 if (!res.ssn) {
                     showBox('error-external');
@@ -41,12 +44,17 @@ function getIPInfo() {
                     resolve(res);
                 }
             } else {
-                console.log(xhr.status);
-                showBox('error-unknown');
+                if (xhr.status === 0 && xhr.statusText == "") {
+                    log("Request was blocked by the browser!")
+                } else {
+                    log(xhr.status + " " + xhr.statusText);
+                }
+                showUnknown();
                 reject("FAIL");
             }
         }).catch(function(err) {
-            showBox('error-unknown');
+            log("Exception: " + err)
+            showUnknown();
             reject(err);
         });
     });
@@ -54,19 +62,26 @@ function getIPInfo() {
 
 function checkStatus(url) {
     return new Promise(function(resolve, reject) {
+        log("Performing test request to " + url + " ...");
         tryGet(url, timeout).then(function(xhr) {
             console.log(xhr);
 
             switch (xhr.status) {
                 case 200:
-                    showBox('error-unknown');
+                    log("Request seems to have been intercepted:");
+                    log(xhr.status + " " + xhr.statusText);
+                    log(xhr.getAllResponseHeaders());
+                    showUnknown();
                     reject("INTERCEPTED");
                     break;
                 case 204:
+                    log("Request successful.")
                     resolve("OK");
                     break;
                 case 511:
+                    log(xhr.status + " " + xhr.statusText);
                     const problem = xhr.getResponseHeader('x-ssn-problem');
+                    log("X-SSN-Problem: " + problem);
                     switch (problem) {
                         case "BLOCKED":
                             showBox('error-blocked');
@@ -78,20 +93,27 @@ function checkStatus(url) {
                             reject("NOPROXY");
                             break
                         default:
-                            showBox('error-unknown');
+                            showUnknown();
                             reject("AUTHREQUIRED");
                             break;
                     }
                     break;
                 default:
-                    console.log(xhr.status);
-                    console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                    showBox('error-unknown');
+                    if (xhr.status === 0 && xhr.statusText == "") {
+                        log("Request was blocked by the browser!")
+                    } else {
+                        log(xhr.status + " " + xhr.statusText);
+                        let problem = xhr.getResponseHeader('x-ssn-problem');
+                        log("X-SSN-Problem: " + problem);
+                        console.log("x-ssn-problem", problem);
+                    }
+
+                    showUnknown();
                     reject("FAIL");
                     break;
             }
         }).catch(function(err) {
-            showBox('error-unknown');
+            showUnknown();
             reject(err);
         });
     });
@@ -116,6 +138,8 @@ function ice() {
                 const pos = text.indexOf(prefix) + prefix.length;
                 const fields = text.substr(pos).split(' ');
                 fields[2] = fields[2].toLowerCase(); // UDP -> udp
+
+                log(text);
 
                 if (fields[1] !== "1" || fields[2] !== "udp") {
                     return;
@@ -158,21 +182,31 @@ function ice() {
 
 function checkNAT() {
     return new Promise(function(resolve, reject) {
+        log("Performing WebRTC NAT test by contacting " + iceServer + " ...");
         ice().then(function(candidate) {
-            if (candidate === null || (candidate.address.indexOf('141.84.69.') < 0 && candidate.address.indexOf('129.187.166.15') < 0)) {
+            if (candidate === null) {
+                log("ICE failed. WebRTC might be disabled or not supported.");
                 if (noMember) {
                     showBox('warn-nat');
                 } else {
-                    showBox('error-unknown');
+                    showUnknown();
                 }
-                reject('LOCALIP');
+                reject('FAIL')
+            } else {
+                log("Detected External IP: " + candidate.address);
+                if (candidate.address.indexOf('141.84.69.') < 0 && candidate.address.indexOf('129.187.166.15') < 0) {
+                    log("Detected External IP is not a SSN IP.");
+                    reject('LOCALIP');
+                } else {
+                    resolve(candidate.address+':'+candidate.port);
+                }
             }
-            resolve(candidate.address+':'+candidate.port);
         }).catch(function(error) {
+            log("Error: " + error);
             if (noMember) {
                 showBox('warn-nat');
             } else {
-                showBox('error-unknown');
+                showUnknown();
             }
             reject(error);
         });
@@ -189,6 +223,7 @@ function runTest(index, testFunc) {
     const status = getStatusColumn(index);
     return new Promise(function(resolve, reject) {
         markRunning(status);
+        log("----------");
         sleep(500).then(function(res) {
             testFunc().then(function(res) {
                 console.log(index, res);
@@ -200,12 +235,26 @@ function runTest(index, testFunc) {
                 reject(err);
             })
         });
-
     });
+}
+
+const logElem = document.getElementById('log');
+logElem.onclick = function() {
+    this.focus();
+    this.select();
+}
+
+function log(msg) {
+    logElem.innerHTML += msg + "\n";
 }
 
 function showBox(name) {
     document.getElementById(name).classList.add('show');
+}
+
+function showUnknown() {
+    showBox('error-unknown');
+    document.getElementById('log-container').classList.add('show');
 }
 
 function markRunning(elem) {
@@ -244,6 +293,8 @@ function skipRemainingTests(index) {
 
 sleep(500).then(function(res) {
     document.getElementById('status').innerHTML = "Performing Tests ...";
+    log("===== StuStaNet Connectivity Selftest =====");
+    log("Date: " + Date().toString());
     return runTest(0, function() {
         return getIPInfo();
     });
