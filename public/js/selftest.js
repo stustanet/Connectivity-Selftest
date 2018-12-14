@@ -110,8 +110,9 @@ function ice() {
                 const prefix = 'candidate:';
                 const pos = text.indexOf(prefix) + prefix.length;
                 const fields = text.substr(pos).split(' ');
+                fields[2] = fields[2].toLowerCase(); // UDP -> udp
 
-                if (fields[1] !== "1" || fields[2] !== "UDP") {
+                if (fields[1] !== "1" || fields[2] !== "udp") {
                     return;
                 }
 
