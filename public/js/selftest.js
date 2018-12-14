@@ -7,6 +7,8 @@ const iceServer = "stun:stun.l.google.com:19302"; //"stun:stun.stunprotocol.org"
 
 const timeout = 5000; // 5s
 
+let noMember = false;
+
 function tryGet(url, timeout=0) {
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
@@ -65,6 +67,7 @@ function checkStatus(url) {
             } else if (xhr.status == 302) {
                 // TODO: check redirect URL
                 console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
+                noMember = true;
                 showBox('error-proxy');
                 reject("NOPROXY");
             } else if (xhr.status == 200) {
@@ -142,6 +145,25 @@ function ice() {
         },
         function(error) {
             console.log('Error creating offer: ', error);
+            reject(error);
+        });
+    });
+}
+
+function checkNAT() {
+    return new Promise(function(resolve, reject) {
+        ice().then(function(candidate) {
+            if (candidate === null || (candidate.address.indexOf('141.84.69.') < 0 && candidate.address.indexOf('129.187.166.15') < 0)) {
+                if (noMember) {
+                    showBox('warn-nat');
+                }
+                reject('LOCALIP');
+            }
+            resolve(candidate.address+':'+candidate.port);
+        }).catch(function(error) {
+            if (noMember) {
+                showBox('warn-nat');
+            }
             reject(error);
         });
     });
@@ -225,8 +247,7 @@ sleep(500).then(function(res) {
     });
 }).then(function(res) {
     return runTest(3, function() {
-        // if (candidate === null || (candidate.indexOf('141.84.69.') < 0 && candidate.indexOf('129.187.166.15') < 0)) {
-        return ice();
+        return checkNAT();
     });
 }).then(function(res) {
     document.getElementById('status').innerHTML = "Done!"
