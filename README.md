@@ -2,6 +2,7 @@
 
 http://selftest.stustanet.de
 
+![](screenshot.png)
 
 ## Detected Problem Types
 
