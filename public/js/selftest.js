@@ -254,9 +254,8 @@ function showBox(name) {
 
 function showUnknown() {
     showBox('error-unknown');
-    const logContainer = document.getElementById('log-container');
-    logContainer.classList.add('show');
-    logContainer.style.height = logContainer.scrollHeight + 'px';
+    document.getElementById('log-container').classList.add('show');
+    logElem.style.height = logElem.scrollHeight + 'px';
 }
 
 function markRunning(elem) {
