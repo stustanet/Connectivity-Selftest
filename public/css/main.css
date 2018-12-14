@@ -179,6 +179,7 @@ td.fail {
 
 #log {
     resize: none;
+    overflow: auto;
     width: 100%;
     min-height: 100px;
     height: auto;

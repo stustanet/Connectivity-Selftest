@@ -35,7 +35,7 @@ function getIPInfo() {
                 let res = JSON.parse(xhr.response);
                 document.getElementById('ip').innerHTML = res.ip;
                 log("IP: "+res.ip);
-                log("Is SSN IP: "+res.ssn);
+                log("SSN IP: "+res.ssn);
                 showBox('info-ip');
                 if (!res.ssn) {
                     showBox('error-external');
@@ -254,7 +254,9 @@ function showBox(name) {
 
 function showUnknown() {
     showBox('error-unknown');
-    document.getElementById('log-container').classList.add('show');
+    const logContainer = document.getElementById('log-container');
+    logContainer.classList.add('show');
+    logContainer.style.height = logContainer.scrollHeight + 'px';
 }
 
 function markRunning(elem) {
