@@ -77,9 +77,11 @@ function checkStatus(url) {
                             showBox('error-proxy');
                             reject("NOPROXY");
                             break
+                        default:
+                            showBox('error-unknown');
+                            reject("AUTHREQUIRED");
+                            break;
                     }
-                    showBox('error-unknown');
-                    reject("AUTHREQUIRED");
                     break;
                 default:
                     console.log(xhr.status);
