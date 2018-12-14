@@ -35,6 +35,16 @@ body {
     z-index: 1;
 }
 
+#top-bar a {
+    color: #4B4B4B;
+    text-decoration: none;
+}
+
+#top-bar a:hover,
+#top-bar a:active {
+    color: #000;
+}
+
 #top-bar div.logo {
     display: inline-block;
     flex: 1 1 0;
