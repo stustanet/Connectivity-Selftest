@@ -157,6 +157,8 @@ function checkNAT() {
             if (candidate === null || (candidate.address.indexOf('141.84.69.') < 0 && candidate.address.indexOf('129.187.166.15') < 0)) {
                 if (noMember) {
                     showBox('warn-nat');
+                } else {
+                    showBox('error-unknown');
                 }
                 reject('LOCALIP');
             }
@@ -164,6 +166,8 @@ function checkNAT() {
         }).catch(function(error) {
             if (noMember) {
                 showBox('warn-nat');
+            } else {
+                showBox('error-unknown');
             }
             reject(error);
         });
