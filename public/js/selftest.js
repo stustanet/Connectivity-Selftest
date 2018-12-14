@@ -107,16 +107,20 @@ function ice() {
                 const prefix = 'candidate:';
                 const pos = text.indexOf(prefix) + prefix.length;
                 const fields = text.substr(pos).split(' ');
-                const candidate = {
-                    'priority': fields[3],
-                    'protocol': fields[2],
-                    'address': fields[4],
-                    'port': parseInt(fields[5]),
-                    'type': fields[7]
-                };
-                console.log(candidate);
-                if (best === null || best.priority >= candidate.priority) {
-                    best = candidate;
+
+                if (fields[1] !== "1" || fields[2] !== "UDP") {
+                    return;
+                }
+
+                if (best === null || best.priority >= fields[3]) {
+                    best = {
+                        'priority': fields[3],
+                        'protocol': fields[2],
+                        'address': fields[4],
+                        'port': parseInt(fields[5]),
+                        'type': fields[7]
+                    };
+                    console.log(best);
                 }
             } else if (!('onicegatheringstatechange' in RTCPeerConnection.prototype)) {
                 pc.close();
@@ -150,7 +154,6 @@ function sleep(ms) {
 }
 
 function runTest(index, testFunc) {
-    console.log("test", index, Date.now());
     const status = getStatusColumn(index);
     return new Promise(function(resolve, reject) {
         markRunning(status);
