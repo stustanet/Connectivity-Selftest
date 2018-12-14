@@ -19,9 +19,6 @@ function tryGet(url, timeout=0) {
             reject(e);
         }
         xhr.addEventListener("readystatechange", function processRequest(e) {
-            // if (xhr.readyState == xhr.HEADERS_RECEIVED) {
-            //     console.log(xhr.getAllResponseHeaders());
-            // }
             if (xhr.readyState == xhr.DONE) {
                 resolve(xhr);
             }
@@ -60,30 +57,36 @@ function checkStatus(url) {
         tryGet(url, timeout).then(function(xhr) {
             console.log(xhr);
 
-            // TODO: Check X-SSN-PROBLEM == BLOCKED || NOMEMBER
-
-            if (xhr.status == 204) {
-                resolve("OK");
-            } else if (xhr.status == 302) {
-                // TODO: check redirect URL
-                console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
-                noMember = true;
-                showBox('error-proxy');
-                reject("NOPROXY");
-            } else if (xhr.status == 200) {
-                showBox('error-unknown');
-                reject("INTERCEPTED"); // TODO
-            } else {
-                console.log(xhr.status);
-                let problem = xhr.getResponseHeader('x-ssn-problem');
-                console.log("x-ssn-problem", problem);
-                if (problem == "BLOCKED") {
-                    showBox('error-blocked');
-                    reject("BLOCKED");
-                } else {
+            switch (xhr.status) {
+                case 200:
+                    showBox('error-unknown');
+                    reject("INTERCEPTED");
+                    break;
+                case 204:
+                    resolve("OK");
+                    break;
+                case 511:
+                    const problem = xhr.getResponseHeader('x-ssn-problem');
+                    switch (problem) {
+                        case "BLOCKED":
+                            showBox('error-blocked');
+                            reject("BLOCKED");
+                            break;
+                        case "NOMEMBER":
+                            noMember = true;
+                            showBox('error-proxy');
+                            reject("NOPROXY");
+                            break
+                    }
+                    showBox('error-unknown');
+                    reject("AUTHREQUIRED");
+                    break;
+                default:
+                    console.log(xhr.status);
+                    console.log("x-ssn-problem", xhr.getResponseHeader('x-ssn-problem'));
                     showBox('error-unknown');
                     reject("FAIL");
-                }
+                    break;
             }
         }).catch(function(err) {
             showBox('error-unknown');
