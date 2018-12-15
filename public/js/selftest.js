@@ -159,7 +159,7 @@ function ice() {
                 resolve(best);
             }
         };
-        pc.onicegatheringstatechange = function() {
+        pc.onicegatheringstatechange = function(event) {
             if (pc.iceGatheringState !== 'complete') {
                 return;
             }
