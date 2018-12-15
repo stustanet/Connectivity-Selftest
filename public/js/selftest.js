@@ -258,6 +258,18 @@ function showUnknown() {
     logElem.style.height = logElem.scrollHeight + 'px';
 }
 
+function showLogButton() {
+    if (document.getElementById('log-container').className == "") {
+        const btnContainer = document.querySelector('#log-show');
+        btnContainer.classList.add('show');
+        const btn = document.querySelector('#log-show button');
+        btn.onclick = function () {
+            btnContainer.classList = "";
+            document.getElementById('log-container').classList.add('show');
+        }
+    }
+}
+
 function markRunning(elem) {
     elem.innerHTML = 'Running';
     elem.className = 'running';
@@ -312,8 +324,10 @@ sleep(500).then(function(res) {
         return checkNAT();
     });
 }).then(function(res) {
+    showLogButton();
     document.getElementById('status').innerHTML = "Done!"
 }).catch(function(err) {
     console.log(err);
+    showLogButton();
     document.getElementById('status').innerHTML = "Problems detected!"
 });

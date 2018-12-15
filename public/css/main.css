@@ -160,6 +160,11 @@ td.fail {
     color: #c53631;;
 }
 
+#log-show {
+    text-align: right;
+    display: none;
+}
+
 #log-container {
     padding: .4rem .6rem;
     line-height: 1.2;
