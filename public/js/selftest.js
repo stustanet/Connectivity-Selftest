@@ -9,6 +9,13 @@ const timeout = 10000; // 10s
 
 let noMember = false;
 
+function isIncompatibleBrowser() {
+    let ua = window.navigator.userAgent;
+    let isIE = /msie\s|trident\/|edge\//i.test(uA) && !!(document.uniqueID || document.documentMode || window.ActiveXObject || window.MSInputMethodContext);
+
+    return isIE;
+}
+
 function tryGet(url, timeout=0) {
     return new Promise(function(resolve, reject) {
         let xhr = new XMLHttpRequest();
@@ -316,6 +323,13 @@ sleep(500).then(function(res) {
     log("===== StuStaNet Connectivity Selftest =====");
     log("Date: " + Date().toString());
     log("User Agent: " + window.navigator.userAgent);
+
+    if (isIncompatibleBrowser) {
+        showBox('error-browser');
+        document.getElementById('status').innerHTML = "Can not run test.";
+        return Promise.reject('UNSUPPORTED');
+    }
+
     return runTest(0, function() {
         return getIPInfo();
     });
