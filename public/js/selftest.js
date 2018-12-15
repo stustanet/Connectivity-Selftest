@@ -278,7 +278,7 @@ function showLogButton() {
         let btnContainer = document.querySelector('#log-show');
         btnContainer.classList.add('show');
         document.querySelector('#log-show button').onclick = function () {
-            btnContainer.classList = "";
+            btnContainer.className = "";
             showLog();
         }
     }
@@ -326,7 +326,6 @@ sleep(500).then(function(res) {
 
     if (isIncompatibleBrowser) {
         showBox('error-browser');
-        document.getElementById('status').innerHTML = "Can not run test.";
         return Promise.reject('UNSUPPORTED');
     }
 
