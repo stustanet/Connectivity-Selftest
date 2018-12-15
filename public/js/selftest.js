@@ -254,6 +254,10 @@ function showBox(name) {
 
 function showUnknown() {
     showBox('error-unknown');
+    showLog();
+}
+
+function showLog() {
     document.getElementById('log-container').classList.add('show');
     logElem.style.height = logElem.scrollHeight + 'px';
 }
@@ -265,7 +269,7 @@ function showLogButton() {
         const btn = document.querySelector('#log-show button');
         btn.onclick = function () {
             btnContainer.classList = "";
-            document.getElementById('log-container').classList.add('show');
+            showLog();
         }
     }
 }
