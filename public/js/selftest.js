@@ -268,7 +268,8 @@ function showLog() {
 
 function showLogButton() {
     if (document.getElementById('log-container').className == "") {
-        document.querySelector('#log-show').classList.add('show');
+        let btnContainer = document.querySelector('#log-show');
+        btnContainer.classList.add('show');
         document.querySelector('#log-show button').onclick = function () {
             btnContainer.classList = "";
             showLog();
