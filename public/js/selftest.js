@@ -167,7 +167,9 @@ function ice() {
             pc = null;
             resolve(best);
         };
-        pc.addTransceiver('audio');
+        if ('addTransceiver' in RTCPeerConnection.prototype) {
+            pc.addTransceiver('audio');
+        }
         pc.createOffer({offerToReceiveAudio: true}).then(
         function(desc) {
             pc.setLocalDescription(desc);
