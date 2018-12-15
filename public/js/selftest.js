@@ -175,6 +175,11 @@ function ice() {
         function(error) {
             reject(error);
         });
+        window.setTimeout(function() {
+            pc.close();
+            pc = null;
+            reject('TIMEOUT');
+        }, timeout);
     });
 }
 
