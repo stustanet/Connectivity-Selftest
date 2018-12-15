@@ -11,7 +11,7 @@ let noMember = false;
 
 function isIncompatibleBrowser() {
     let ua = window.navigator.userAgent;
-    let isIE = /msie\s|trident\/|edge\//i.test(uA) && !!(document.uniqueID || document.documentMode || window.ActiveXObject || window.MSInputMethodContext);
+    let isIE = /msie\s|trident\/|edge\//i.test(ua) && !!(document.uniqueID || document.documentMode || window.ActiveXObject || window.MSInputMethodContext);
 
     return isIE;
 }
