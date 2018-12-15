@@ -324,7 +324,7 @@ sleep(500).then(function(res) {
     log("Date: " + Date().toString());
     log("User Agent: " + window.navigator.userAgent);
 
-    if (isIncompatibleBrowser) {
+    if (isIncompatibleBrowser()) {
         showBox('error-browser');
         skipRemainingTests(-1);
         return Promise.reject('UNSUPPORTED');
