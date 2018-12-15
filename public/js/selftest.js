@@ -167,6 +167,7 @@ function ice() {
             pc = null;
             resolve(best);
         };
+        pc.addTransceiver('audio');
         pc.createOffer({offerToReceiveAudio: true}).then(
         function(desc) {
             pc.setLocalDescription(desc);
