@@ -322,12 +322,12 @@ sleep(500).then(function(res) {
     });
 }).then(function(res) {
     log("----------");
-    log("No Problems detected.");
+    log("No problems detected.");
     showLogButton();
-    document.getElementById('status').innerHTML = "Done!"
+    document.getElementById('status').innerHTML = "Done! No problems detected."
 }).catch(function(err) {
     log("----------");
-    log("Test Failed.");
+    log("Test failed.");
     showLogButton();
     document.getElementById('status').innerHTML = "Problems detected!"
 });
