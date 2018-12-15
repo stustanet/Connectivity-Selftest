@@ -1,8 +1,8 @@
 
 'use strict';
 
-const httpTestURL = "http://connectivity.jsweb.eu/generate_204";
-const httpsTestURL = "https://connectivity.js-web.eu/generate_204";
+const httpTestURL = "http://conntest.jsweb.eu/generate_204";
+const httpsTestURL = "https://conntest.jsweb.eu/generate_204";
 const iceServer = "stun:stun.l.google.com:19302"; //"stun:stun.stunprotocol.org";
 
 const timeout = 10000; // 10s
