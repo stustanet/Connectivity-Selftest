@@ -132,7 +132,8 @@ function ice() {
                 credential: ""
             }],
             iceTransportPolicy: "all",
-            iceCandidatePoolSize: 0
+            iceCandidatePoolSize: 0,
+            sdpSemantics: 'unified-plan'
         };
 
         let best = null;
