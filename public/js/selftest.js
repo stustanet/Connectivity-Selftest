@@ -326,6 +326,7 @@ sleep(500).then(function(res) {
 
     if (isIncompatibleBrowser) {
         showBox('error-browser');
+        skipRemainingTests(0);
         return Promise.reject('UNSUPPORTED');
     }
 
