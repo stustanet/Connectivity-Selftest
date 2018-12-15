@@ -30,7 +30,6 @@ function getIPInfo() {
     return new Promise(function(resolve, reject) {
         log("Getting IP Info ...");
         tryGet("/status", timeout).then(function(xhr) {
-            console.log(xhr);
             if (xhr.status == 200 && xhr.getResponseHeader('content-type') == 'application/json') {
                 let res = JSON.parse(xhr.response);
                 document.getElementById('ip').innerHTML = res.ip;
@@ -64,8 +63,6 @@ function checkStatus(url) {
     return new Promise(function(resolve, reject) {
         log("Performing test request to " + url + " ...");
         tryGet(url, timeout).then(function(xhr) {
-            console.log(xhr);
-
             switch (xhr.status) {
                 case 200:
                     log("Request seems to have been intercepted:");
@@ -105,7 +102,6 @@ function checkStatus(url) {
                         log(xhr.status + " " + xhr.statusText);
                         let problem = xhr.getResponseHeader('x-ssn-problem');
                         log("X-SSN-Problem: " + problem);
-                        console.log("x-ssn-problem", problem);
                     }
 
                     showUnknown();
@@ -153,7 +149,6 @@ function ice() {
                         'port': parseInt(fields[5]),
                         'type': fields[7]
                     };
-                    console.log(best);
                 }
             } else if (!('onicegatheringstatechange' in RTCPeerConnection.prototype)) {
                 pc.close();
@@ -174,7 +169,6 @@ function ice() {
             pc.setLocalDescription(desc);
         },
         function(error) {
-            console.log('Error creating offer: ', error);
             reject(error);
         });
     });
@@ -226,7 +220,6 @@ function runTest(index, testFunc) {
         log("----------");
         sleep(500).then(function(res) {
             testFunc().then(function(res) {
-                console.log(index, res);
                 markOK(status);
                 resolve(res);
             }, function(err) {
@@ -259,7 +252,7 @@ function showUnknown() {
 
 function showLog() {
     document.getElementById('log-container').classList.add('show');
-    logElem.style.height = logElem.scrollHeight + 'px';
+    logElem.style.height = (logElem.scrollHeight+2) + 'px';
 }
 
 function showLogButton() {
@@ -328,10 +321,13 @@ sleep(500).then(function(res) {
         return checkNAT();
     });
 }).then(function(res) {
+    log("----------");
+    log("No Problems detected.");
     showLogButton();
     document.getElementById('status').innerHTML = "Done!"
 }).catch(function(err) {
-    console.log(err);
+    log("----------");
+    log("Test Failed.");
     showLogButton();
     document.getElementById('status').innerHTML = "Problems detected!"
 });
