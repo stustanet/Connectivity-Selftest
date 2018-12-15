@@ -119,7 +119,10 @@ function ice() {
     return new Promise(function(resolve, reject) {
         const config = {
             iceServers: [{
-                urls: iceServer,
+                url: iceServer,
+                urls: [iceServer],
+                username: "",
+                credential: ""
             }],
             iceTransportPolicy: "all",
             iceCandidatePoolSize: 0
@@ -164,7 +167,7 @@ function ice() {
             pc = null;
             resolve(best);
         };
-        pc.createOffer({offerToReceiveAudio: 1}).then(
+        pc.createOffer({offerToReceiveAudio: true}).then(
         function(desc) {
             pc.setLocalDescription(desc);
         },
