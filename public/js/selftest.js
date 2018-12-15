@@ -3,7 +3,7 @@
 
 const httpTestURL = "http://conntest.jsweb.eu/generate_204";
 const httpsTestURL = "https://conntest.jsweb.eu/generate_204";
-const iceServer = "stun:stun.l.google.com:19302"; //"stun:stun.stunprotocol.org";
+const iceServer = "stun:conntest.jsweb.eu:3478";
 
 const timeout = 10000; // 10s
 
