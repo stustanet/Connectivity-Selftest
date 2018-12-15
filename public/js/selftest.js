@@ -305,6 +305,7 @@ sleep(500).then(function(res) {
     document.getElementById('status').innerHTML = "Performing Tests ...";
     log("===== StuStaNet Connectivity Selftest =====");
     log("Date: " + Date().toString());
+    log("User Agent: " + window.navigator.userAgent);
     return runTest(0, function() {
         return getIPInfo();
     });
