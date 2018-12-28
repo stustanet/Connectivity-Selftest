@@ -210,6 +210,7 @@ function checkNAT() {
                 log("Detected External IP: " + candidate.address);
                 if (candidate.address.indexOf('141.84.69.') < 0 && candidate.address.indexOf('129.187.166.15') < 0) {
                     log("Detected External IP is not a SSN IP.");
+                    showUnknown();
                     reject('LOCALIP');
                 } else {
                     resolve(candidate.address+':'+candidate.port);
