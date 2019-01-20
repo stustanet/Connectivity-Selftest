@@ -1,9 +1,9 @@
 
 'use strict';
 
-const httpTestURL = "http://conntest.jsweb.eu/generate_204";
-const httpsTestURL = "https://conntest.jsweb.eu/generate_204";
-const iceServer = "stun:conntest.jsweb.eu:3478";
+const httpTestURL = "http://conntest.stustanet.de/generate_204";
+const httpsTestURL = "https://conntest.stustanet.de/generate_204";
+const iceServer = "stun:conntest.stustanet.de:3478";
 
 const timeout = 10000; // 10s
 
