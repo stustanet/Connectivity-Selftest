@@ -187,8 +187,10 @@ function ice() {
             reject(error);
         });
         window.setTimeout(function() {
-            pc.close();
-            pc = null;
+            if (!!pc) {
+                pc.close();
+                pc = null;
+            }
             reject('TIMEOUT');
         }, timeout);
     });
