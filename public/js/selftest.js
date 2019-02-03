@@ -73,36 +73,36 @@ function checkStatus(url) {
         tryGet(url, timeout).then(function(xhr) {
             switch (xhr.status) {
                 case 200:
-                    log("Request seems to have been intercepted:");
-                    log(xhr.status + " " + xhr.statusText);
-                    log(xhr.getAllResponseHeaders());
-                    showUnknown();
-                    reject("INTERCEPTED");
-                    break;
-                case 204:
-                    log("Request successful.")
-                    resolve("OK");
-                    break;
                 case 511:
-                    log(xhr.status + " " + xhr.statusText);
                     const problem = xhr.getResponseHeader('x-ssn-problem');
                     log("X-SSN-Problem: " + problem);
                     switch (problem) {
                         case "BLOCKED":
                             showBox('error-blocked');
                             reject("BLOCKED");
-                            break;
+                            return;
                         case "NOMEMBER":
                             noMember = true;
                             showBox('error-proxy');
                             reject("NOPROXY");
-                            break
-                        default:
-                            showUnknown();
-                            reject("AUTHREQUIRED");
-                            break;
+                            return;
                     }
-                    break;
+                    if (xhr.status == 200) {
+                        log(xhr.status + " " + xhr.statusText);
+                        log("Request seems to have been intercepted:");
+                        log(xhr.getAllResponseHeaders());
+                        showUnknown();
+                        reject("INTERCEPTED");
+                        return;
+                    } else {
+                        showUnknown();
+                        reject("AUTHREQUIRED");
+                        return;
+                    }
+                case 204:
+                    log("Request successful.")
+                    resolve("OK");
+                    return;
                 default:
                     if (xhr.status === 0 && xhr.statusText == "") {
                         log("Request was blocked by the browser!")
@@ -114,7 +114,7 @@ function checkStatus(url) {
 
                     showUnknown();
                     reject("FAIL");
-                    break;
+                    return;
             }
         }).catch(function(err) {
             showUnknown();
