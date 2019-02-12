@@ -204,12 +204,16 @@ footer {
     flex-shrink: 0;
     white-space: nowrap;
     padding: 0 20px;
+}
+
+footer .container {
     display: flex;
+    position: relative;
     justify-content: space-between;
 }
 
-footer div {
-    padding: 15px;
+footer .container div {
+    padding: 15px 0;
 }
 
 footer .center {
