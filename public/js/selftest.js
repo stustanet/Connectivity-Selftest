@@ -371,6 +371,8 @@ function skipRemainingTests(index) {
         return runTest(3, function() {
             return checkNAT();
         });
+    }).catch(function(res) {
+        failed = true;
     }).finally(function(res) {
         if (res === false) {
             failed = true;
