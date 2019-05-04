@@ -386,4 +386,4 @@ function skipRemainingTests(index) {
             markSuccess(document.getElementById('status'));
         }
     });
-})()
+})();
