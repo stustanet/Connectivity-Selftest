@@ -332,7 +332,7 @@ function skipRemainingTests(index) {
     });
 }
 
-function() {
+(function() {
     let failed = false;
 
     sleep(500).then(function(res) {
@@ -386,4 +386,4 @@ function() {
             markSuccess(document.getElementById('status'));
         }
     });
-}()
+})()
