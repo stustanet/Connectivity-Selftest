@@ -94,7 +94,8 @@ nav .container {
 
 div.info,
 div.warn,
-div.error {
+div.error,
+div.success {
     position: relative;
     padding: .5rem .8rem;
     margin-bottom: .5rem;
@@ -116,7 +117,13 @@ div.error {
     border-color: #f5c6cb;
 }
 
-div.show {
+div.success {
+    background: #e1f6e1;
+    border-color: #a9deaa;
+}
+
+div.show,
+div.success {
     display: block !important;
 }
 

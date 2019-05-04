@@ -309,6 +309,11 @@ function markSkipped(elem) {
     elem.className = 'warn';
 }
 
+function markSuccess(elem) {
+    elem.innerHTML = 'Done! No problems detected.';
+    elem.className = 'success';
+}
+
 function getStatusColumn(index) {
     return document.querySelector('#tests tr:nth-child('+(index+1)+') td:nth-child(3)');
 }
@@ -354,7 +359,7 @@ sleep(500).then(function(res) {
     log("----------");
     log("No problems detected.");
     showLogButton();
-    document.getElementById('status').innerHTML = "Done! No problems detected."
+    markSuccess(document.getElementById('status'));
 }).catch(function(err) {
     log("----------");
     log("Test failed.");
