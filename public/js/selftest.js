@@ -236,7 +236,7 @@ function sleep(ms) {
     });
 }
 
-function runTest(index, testFunc) {
+function runTest(index, testFunc, fatal=false) {
     const status = getStatusColumn(index);
     return new Promise(function(resolve, reject) {
         markRunning(status);
@@ -247,8 +247,12 @@ function runTest(index, testFunc) {
                 resolve(res);
             }, function(err) {
                 markFailed(status);
-                skipRemainingTests(index);
-                reject(err);
+                if (fatal) {
+                    skipRemainingTests(index);
+                    reject(false);
+                } else {
+                    resolve(false);
+                }
             })
         });
     });
@@ -328,41 +332,58 @@ function skipRemainingTests(index) {
     });
 }
 
-sleep(500).then(function(res) {
-    document.getElementById('status').innerHTML = "Performing Tests ...";
-    log("===== StuStaNet Connectivity Selftest =====");
-    log("Date: " + Date().toString());
-    log("User Agent: " + window.navigator.userAgent);
+function() {
+    let failed = false;
 
-    if (isIncompatibleBrowser()) {
-        showBox('error-browser');
-        skipRemainingTests(-1);
-        return Promise.reject('UNSUPPORTED');
-    }
+    sleep(500).then(function(res) {
+        document.getElementById('status').innerHTML = "Performing Tests ...";
+        log("===== StuStaNet Connectivity Selftest =====");
+        log("Date: " + Date().toString());
+        log("User Agent: " + window.navigator.userAgent);
 
-    return runTest(0, function() {
-        return getIPInfo();
+        if (isIncompatibleBrowser()) {
+            showBox('error-browser');
+            skipRemainingTests(-1);
+            return Promise.reject('UNSUPPORTED');
+        }
+
+        return runTest(0, function() {
+            return getIPInfo();
+        }, true);
+    }).then(function(res) {
+        if (res === false) {
+            failed = true;
+        }
+        return runTest(1, function() {
+            return checkStatus(httpTestURL);
+        });
+    }).then(function(res) {
+        if (res === false) {
+            failed = true;
+        }
+        return runTest(2, function() {
+            return checkStatus(httpsTestURL);
+        });
+    }).then(function(res) {
+        if (res === false) {
+            failed = true;
+        }
+        return runTest(3, function() {
+            return checkNAT();
+        });
+    }).finally(function(res) {
+        if (res === false) {
+            failed = true;
+        }
+        log("----------");
+        if (failed) {
+            log("Test failed.");
+            showLogButton();
+            document.getElementById('status').innerHTML = "Problems detected!"
+        } else {
+            log("No problems detected.");
+            showLogButton();
+            markSuccess(document.getElementById('status'));
+        }
     });
-}).then(function(res) {
-    return runTest(1, function() {
-        return checkStatus(httpTestURL);
-    });
-}).then(function(res) {
-    return runTest(2, function() {
-        return checkStatus(httpsTestURL);
-    });
-}).then(function(res) {
-    return runTest(3, function() {
-        return checkNAT();
-    });
-}).then(function(res) {
-    log("----------");
-    log("No problems detected.");
-    showLogButton();
-    markSuccess(document.getElementById('status'));
-}).catch(function(err) {
-    log("----------");
-    log("Test failed.");
-    showLogButton();
-    document.getElementById('status').innerHTML = "Problems detected!"
-});
+}()
