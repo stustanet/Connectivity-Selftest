@@ -7,8 +7,6 @@ const iceServer = "stun:conntest.stustanet.de:3478";
 
 const timeout = 10000; // 10s
 
-let noMember = false;
-
 function isIncompatibleBrowser() {
     let ua = window.navigator.userAgent;
     let isIE = /msie\s|trident\/|edge\//i.test(ua) &&
@@ -82,7 +80,6 @@ function checkStatus(url) {
                             reject("BLOCKED");
                             return;
                         case "NOMEMBER":
-                            noMember = true;
                             showBox('error-proxy');
                             reject("NOPROXY");
                             return;
@@ -202,11 +199,7 @@ function checkNAT() {
         ice().then(function(candidate) {
             if (candidate === null) {
                 log("ICE failed. WebRTC might be disabled or not supported.");
-                if (noMember) {
-                    showBox('warn-nat');
-                } else {
-                    showUnknown();
-                }
+                showBox('warn-nat');
                 reject('FAIL')
             } else {
                 log("Detected External IP: " + candidate.address);
@@ -220,11 +213,7 @@ function checkNAT() {
             }
         }).catch(function(error) {
             log("Error: " + error);
-            if (noMember) {
-                showBox('warn-nat');
-            } else {
-                showUnknown();
-            }
+            showBox('warn-nat');
             reject(error);
         });
     });
