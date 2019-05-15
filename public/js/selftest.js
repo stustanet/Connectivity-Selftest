@@ -65,7 +65,7 @@ function getIPInfo() {
     });
 }
 
-function checkStatus(url) {
+function checkStatus(url, hideUnknown=false) {
     return new Promise(function(resolve, reject) {
         log("Performing test request to " + url + " ...");
         tryGet(url, timeout).then(function(xhr) {
@@ -109,7 +109,9 @@ function checkStatus(url) {
                         log("X-SSN-Problem: " + problem);
                     }
 
-                    showUnknown();
+                    if (!hideUnknown) {
+                        showUnknown();
+                    }
                     reject("FAIL");
                     return;
             }
@@ -351,7 +353,7 @@ function skipRemainingTests(index) {
             failed = true;
         }
         return runTest(2, function() {
-            return checkStatus(httpsTestURL);
+            return checkStatus(httpsTestURL, failed);
         });
     }).then(function(res) {
         if (res === false) {
