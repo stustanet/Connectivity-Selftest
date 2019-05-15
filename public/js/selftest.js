@@ -211,10 +211,10 @@ function checkNAT() {
                     resolve(candidate.address+':'+candidate.port);
                 }
             }
-        }).catch(function(error) {
-            log("Error: " + error);
+        }).catch(function(err) {
+            log("Error: " + err);
             showBox('warn-nat');
-            reject(error);
+            reject(err);
         });
     });
 }
@@ -234,7 +234,7 @@ function runTest(index, testFunc, fatal=false) {
             testFunc().then(function(res) {
                 markOK(status);
                 resolve(res);
-            }, function(err) {
+            }).catch(function(err) {
                 markFailed(status);
                 if (fatal) {
                     skipRemainingTests(index);
@@ -242,7 +242,7 @@ function runTest(index, testFunc, fatal=false) {
                 } else {
                     resolve(false);
                 }
-            })
+            });
         });
     });
 }
@@ -360,12 +360,13 @@ function skipRemainingTests(index) {
         return runTest(3, function() {
             return checkNAT();
         });
-    }).catch(function(res) {
-        failed = true;
-    }).finally(function(res) {
+    }).then(function(res) {
         if (res === false) {
             failed = true;
         }
+    }).catch(function(err) {
+        failed = true;
+    }).finally(function() {
         log("----------");
         if (failed) {
             log("Test failed.");
