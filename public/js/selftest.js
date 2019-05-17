@@ -251,8 +251,11 @@ function runTest(index, testFunc, fatal=false) {
 
 const logElem = document.getElementById('log');
 logElem.onclick = function() {
-    this.focus();
-    this.select();
+    // select the whole text if nothing was selected yet
+    if (this.selectionStart == this.selectionEnd) {
+        this.focus();
+        this.select();
+    }
 }
 
 function log(msg) {
