@@ -274,6 +274,7 @@ function showUnknown() {
 function showLog() {
     document.getElementById('log-container').classList.add('show');
     logElem.style.height = (logElem.scrollHeight+2) + 'px';
+    logElem.click();
 }
 
 function showLogButton() {
