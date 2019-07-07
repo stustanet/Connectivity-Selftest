@@ -51,6 +51,7 @@ function getIPInfo() {
             } else {
                 if (xhr.status === 0 && xhr.statusText == "") {
                     log("Request was blocked by the browser!")
+                    log("See the browser console (Dev Tools) for further details.")
                 } else {
                     log(xhr.status + " " + xhr.statusText);
                 }
