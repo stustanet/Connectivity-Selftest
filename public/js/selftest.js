@@ -72,6 +72,7 @@ function checkStatus(url, hideUnknown=false) {
         tryGet(url, timeout).then(function(xhr) {
             switch (xhr.status) {
                 case 200:
+                case 404:
                 case 511:
                     const problem = xhr.getResponseHeader('x-ssn-problem');
                     log("X-SSN-Problem: " + problem);
@@ -85,16 +86,16 @@ function checkStatus(url, hideUnknown=false) {
                             reject("NOPROXY");
                             return;
                     }
-                    if (xhr.status == 200) {
+                    if (xhr.status == 511) {
+                        showUnknown();
+                        reject("AUTHREQUIRED");
+                        return;
+                    } else {
                         log(xhr.status + " " + xhr.statusText);
                         log("Request seems to have been intercepted:");
                         log(xhr.getAllResponseHeaders());
                         showUnknown();
                         reject("INTERCEPTED");
-                        return;
-                    } else {
-                        showUnknown();
-                        reject("AUTHREQUIRED");
                         return;
                     }
                 case 204:
