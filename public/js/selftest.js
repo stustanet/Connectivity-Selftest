@@ -353,7 +353,7 @@ function skipRemainingTests(index) {
         }
         return runTest(1, function() {
             return checkStatus(httpTestURL);
-        });
+        }, true);
     }).then(function(res) {
         if (res === false) {
             failed = true;
