@@ -138,6 +138,12 @@ function ice() {
             sdpSemantics: 'unified-plan'
         };
 
+        RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+        if (!!RTCPeerConnection) {
+            log("RTCPeerConnection not supported by browser or blocked.");
+            reject('UNSUPPORTED');
+        }
+
         let best = null;
         let pc = new RTCPeerConnection(config);
         pc.onicecandidate = function(event) {
