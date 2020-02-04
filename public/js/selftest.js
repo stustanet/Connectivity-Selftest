@@ -139,7 +139,7 @@ function ice() {
         };
 
         RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-        if (!!RTCPeerConnection) {
+        if (!RTCPeerConnection) {
             log("RTCPeerConnection not supported by browser or blocked.");
             reject('UNSUPPORTED');
         }
