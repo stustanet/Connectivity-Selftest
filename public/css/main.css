@@ -216,11 +216,11 @@ footer {
 footer .container {
     display: flex;
     position: relative;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 footer .container div {
-    padding: 15px 0;
+    padding: 15px 25px;
 }
 
 footer .center {
