@@ -268,6 +268,7 @@ logElem.onclick = function() {
 
 function log(msg) {
     logElem.innerHTML += msg + "\n";
+    document.getElementById('support-mail').href += encodeURI(msg + "\n");
 }
 
 function showBox(name) {
